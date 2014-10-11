@@ -6,5 +6,23 @@
 </head>
 
 <body>
+
+<h1>Search your wine here</h1>
+<form action="result.php" method="GET">
+<table border="1" cellpadding="2">
+<tr><td>Wine name: </td><td><input type="text" name="wine_name"></td></tr>
+<tr><td>Wine Region: </td><td><input type="text" name="wine_region"></td></tr>
+<tr><td>Winery name: </td><td><input type="text" name="winery_name"></td></tr>
+<tr><td>Wine years:  </td><td>From: <input type="text" name="wine_yearMin"></td><td>To:<input type="text" name="wine_yearMax"></td></tr>
+<tr><td>Minumum number of wines in stock: </td><td><input type="text" name="wine_quantity"></td></tr>
+<tr><td>Minumum number of customers who have purchased each wine: </td><td><input type="text" name="wine_purchased"></td></tr>
+<tr><td>Cost range: </td><td>Minimum: <input type="text" name="wine_costMin"></td><td>Maximum: <input type="text" name="wine_costMax"></td></tr>
+<tr><td></td><td><input type="submit" value="Search"></td></tr>
+
+
+
+</table>
+</form>
+
 </body>
 </html>
