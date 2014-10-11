@@ -1,7 +1,19 @@
 <?php
 
-//mysqli_close($connection);
-	include_once("connect.php");
+/*SIR YOU HAVE TO CHANGE BACK THIS TO YOUR DRIVE!!!!!*/ /*READ THIS <<<<<<<<<<<<<<<<<<<<<<<<<<*/
+	set_include_path('D:/wamp/wamp/bin/php/php5.4.12/pear');
+	require_once "HTML/Template/IT.php";
+	/*CHANGE BACK TO YOUR DRIVE SIR*/
+	
+	$template = new HTML_Template_IT();
+	$template->loadTemplatefile("result_template.tpl",true,true);
+	$message = "No records match your search criteria";
+	$message2 = "Your minimum price is bigger than your maximum price";
+	$message3 = "Your start year is bigger than your end year";
+	$message4 =  "Wine years, number of wines, number of customer purchased, and cost range must input Number only";
+	
+//START UP CONNECTION
+	include_once("connect.php"); 
 	
 $wine_name = $_GET['wine_name'];
 $wine_region = $_GET['wine_region'];
@@ -83,68 +95,83 @@ if((is_numeric($wine_yearMin))&&(is_numeric($wine_yearMax))&&(is_numeric($wine_q
 	
 		//check result 
 		if (mysql_num_rows($result)>0){
-			echo "<pre>\n<table border='1' cellpadding='10' align='center'>";
-	echo "<tr>
-	
-	<td>No</td>
-	<td>Wine Name</td>
-	<td>wine variety</td>
-	<td>year</td>
-	<td>Winery</td>
-	<td>Region</td>
-	<td>Cost</td>
-	<td>Quantity on hand</td>
-	<td>Number of customer purchased</td></tr>";
+			
+			//template!
+			$template->setCurrentBlock("fieldName");
+			$template->setVariable("No", "No");
+			$template->setVariable("WineName", "Wine Name");
+			$template->setVariable("WineVariety", "Wine Variety");
+			$template->setVariable("Year", "Year");
+			$template->setVariable("Winery", "Winery");
+			$template->setVariable("Region", "Region");
+			$template->setVariable("Cost", "Cost");
+			$template->setVariable("Quantity", "Quantity on hand");
+			$template->setVariable("Purchased", "Number of customer purchased");
+			$template->parseCurrentBlock();
+			
 	$count = 0;
 	
 	while ($row = mysql_fetch_assoc($result)){	
 	$count++;
 	
-						echo "<tr>
-						<td>".$count."</td>
-						<td>".$row['wine_name']."</td>
-						<td>".$row['variety']."</td>
-						<td>".$row['year']."</td>
-						<td>".$row['winery_name']."</td>
-						<td>".$row['region_name']."</td>
-						<td>".$row['cost']."</td>
-						<td>".$row['on_hand']."</td>
-						<td>".$row['custNumber']."</td></tr>";
+				//use of template
+						$template->setCurrentBlock("result");
+						$template->setVariable("No", $count);
+						$template->setVariable("wineName", $row['wine_name']);
+						$template->setVariable("variety", $row['variety']);
+						$template->setVariable("year", $row['year']);
+						$template->setVariable("wineryName", $row['winery_name']);
+						$template->setVariable("regionName", $row['region_name']);
+						$template->setVariable("cost", $row['cost']);
+						$template->setVariable("onHand", $row['on_hand']);
+						$template->setVariable("custNumber", $row['custNumber']);
+						$template->parseCurrentBlock();
 	
 	
 	}
-	echo "   </table> </pre>";
+	
 		 }	
-		 //no result notification
-		else {
-			echo "</br></br><center><b>No records match your search criteria.</b></br></br>Redirecting back to search page. </center>"; 
-		
-		header( "refresh:4;url=index.php" );}	
+		 
+		 //change to template
+		else { //no result notification
+		$template->setCurrentBlock("noResult");
+		$template->setVariable("message", $message);
+		$template->parseCurrentBlock();
+		header( "refresh:4;url=index.php" );	}
 		
 		}
-		 
+		
 		 //price range error notification
 			 else {
-				 echo "</br></br><center>Your winery minimum price " .$wine_costMin. " is bigger than your maximum price " .$wine_costMax."</center>";
-			 		echo "</br></br><center>Redirecting back to search page.</center>";
-					 header( "refresh:4;url=index.php");}
+				 $template->setCurrentBlock("noResult");
+		$template->setVariable("message", $message2);
+		$template->parseCurrentBlock();
+		header( "refresh:4;url=index.php" );
+		}
 					 
 			 }
 			 
 		 
 		//year range error notification
-		else { echo "</br></br><center>Your winery year from" .$wine_yearMin. " is bigger than to " .$wine_yearMax." year</center>";
-			 		echo "</br></br><center>Redirecting back to search page.</center>";
-					 header( "refresh:4;url=index.php"); }
+		else { $template->setCurrentBlock("noResult");
+		$template->setVariable("message", $message3);
+		$template->parseCurrentBlock();
+		header( "refresh:4;url=index.php" ); }
 	
 	
 	
 	}
 	//number error notification
-		else { echo"</br></br><center>Wine years, number of wines, number of customer purchased, and cost range must input Number only</br></br>Redirecting back to search page. </center>";
-		
-			header( "refresh:4;url=index.php" );
+		else { $template->setCurrentBlock("noResult");
+		$template->setVariable("message", $message4);
+		$template->parseCurrentBlock();
+		header( "refresh:4;url=index.php" );
 		}
+		
+		//show template
+		$template->show();
+		
+		//close connection
 mysql_close($connection);
 	
 ?>
