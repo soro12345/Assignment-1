@@ -9,15 +9,18 @@
 
 <h1>Search your wine here</h1>
 <?php include_once("connect.php"); ?>
-<form action="result.php" method="GET">
+<form action="result.php" method="get">
 <table border="1" cellpadding="2">
 <tr><td>Wine name: </td><td><input type="text" name="wine_name"></td></tr>
 <tr><td>Wine Region: </td><td>
 <select name="wine_region">
+
 <?php 
 // select region name from region table
-if (!($result = mysql_query ("SELECT * FROM region", $connection)))
+$query="SELECT * FROM region";
+if (!($result = mysql_query ( $query,$connection)))
       showerror();
+	  $temp=mysql_fetch_array($result);
 	  
 	  while($temp=mysql_fetch_array($result)){
 		  echo "<option value='".$temp["region_name"]."''>";
