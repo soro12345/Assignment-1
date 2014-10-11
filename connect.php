@@ -7,7 +7,7 @@
    }
 	
    // (1) Open the database connection
-   if (!($connection = @ mysql_connect("localhost","root")))
+   if (!($connection = @ mysql_connect("localhost","root","")))
       die("Could not connect");
 
    // (2) Select the winestore database
